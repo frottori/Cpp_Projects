@@ -1,2 +1,2 @@
 # Student_Course_Classes 
-C++ Project for implementation of Education Classes
+C++ Project for implementation of an Education System
