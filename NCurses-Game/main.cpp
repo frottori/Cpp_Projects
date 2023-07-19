@@ -33,7 +33,9 @@ int main(int argc,char** argv)
     mapFile.seekg(0, ios::beg);
 
     Engine e(mapFile,rows,cols);
-    e.start_game();
+    bool start = e.start_screen();
+    if(start)
+        e.start_game();
   
     mapFile.close();
     return 0;

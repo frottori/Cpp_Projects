@@ -42,7 +42,6 @@ void Engine :: start_game()
     init_pair(3, COLOR_BLUE, COLOR_BLACK);     // Wall colour: Red on Black
     init_pair(4, COLOR_CYAN, COLOR_BLACK);     // Player 3 : Cyan on Black
 
-
     //Initialise positions of players
     MPoteridis.initial_position(maze,MPoteridis,MPoteridis,rows,cols);
     LMalfoys.initial_position(maze,MPoteridis,MPoteridis,rows,cols);
@@ -116,6 +115,7 @@ void Engine :: end_screen(bool flag)
 {
     clear();
     move(0,0);
+    
     if(flag)  //user won
         printw("YOU WIN!\nPress any key to exit...");
     else 
@@ -124,4 +124,63 @@ void Engine :: end_screen(bool flag)
     getch();
     endwin();
     exit(0);
+}
+
+bool Engine :: start_screen()
+{
+    initscr();
+    noecho();
+    cbreak();
+    curs_set(0);
+    
+    //get screen size
+    int yMax, xMax;
+    getmaxyx(stdscr,yMax,xMax);
+
+    WINDOW* menuwin = newwin(4,15,0,0);
+    box(menuwin,0,0);
+    mvwprintw(menuwin,0,3,"Poteridis");
+    refresh();
+    wrefresh(menuwin);
+    keypad(menuwin,true);
+
+    string choices[2] = {"start","exit"};
+    int choice, highlight = 0;
+
+    while(1)
+    {
+        for(int i=0;i<2;i++)
+        {
+            if(i==highlight)
+                wattron(menuwin,A_REVERSE);
+                mvwprintw(menuwin,i+1,4,choices[i].c_str());
+                wattroff(menuwin,A_REVERSE);
+        }
+        choice = wgetch(menuwin);
+        switch(choice)
+        {
+            case KEY_UP: 
+                highlight--;
+                if (highlight==-1) 
+                    highlight=0;
+                break;
+            case KEY_DOWN: 
+                highlight++;
+                if (highlight==3) 
+                    highlight=2;
+                break;
+            default: break;
+        }
+        if(choice==10 && highlight==0) //ENTER and start
+        {
+            clear();
+            endwin();
+            return true;
+        }
+        if(choice==10 && highlight==1) //ENTER and exit
+        {
+            endwin();
+            exit(0);
+        }
+    }
 }
