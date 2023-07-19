@@ -25,5 +25,7 @@ class Player
         void setDx(int);
         int getDy();
         void setDy(int);
+        int getColor();
+        void setColor(int);
 };
 #endif

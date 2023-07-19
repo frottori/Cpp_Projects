@@ -8,7 +8,8 @@ using namespace std;
 
 Player :: Player()
 {
-    
+    this->dx = -1;
+    this->dy = -1;
 }
 
 Player :: Player(char Name,int color)
@@ -104,4 +105,14 @@ int Player :: getDy()
 void Player :: setDy(int dy)
 {
     this->dy = dy;
+}
+
+int Player :: getColor()
+{
+    return this->color;
+}
+
+void Player :: setColor(int color)
+{
+    this->color = color;
 }
