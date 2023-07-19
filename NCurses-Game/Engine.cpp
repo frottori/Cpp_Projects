@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Engine :: Engine(ifstream& file,int rows,int cols)  : LMalfoys('L',2,rows, cols),MPoteridis('M',1)
+Engine :: Engine(ifstream& file,int rows,int cols)  : LMalfoys('L',2,rows, cols), MPoteridis('M',1), MagStar('&',4,rows,cols)
 {
 
     this->rows = rows;
@@ -40,26 +40,38 @@ void Engine :: start_game()
     init_pair(1, COLOR_MAGENTA, COLOR_BLACK);    // Player 1 colour: Yellow on Black
     init_pair(2, COLOR_GREEN, COLOR_BLACK);     // Player 2 colour: Green on Black
     init_pair(3, COLOR_BLUE, COLOR_BLACK);     // Wall colour: Red on Black
+    init_pair(4, COLOR_CYAN, COLOR_BLACK);     // Player 3 : Cyan on Black
+
 
     //Initialise positions of players
-    MPoteridis.initial_position(maze,MPoteridis,rows,cols);
-    LMalfoys.initial_position(maze,MPoteridis,rows,cols);
+    MPoteridis.initial_position(maze,MPoteridis,MPoteridis,rows,cols);
+    LMalfoys.initial_position(maze,MPoteridis,MPoteridis,rows,cols);
+    MagStar.initial_position(maze,MPoteridis,LMalfoys,rows,cols);
+
     //Print Maze with Players in positions
     this->print_maze();
     
     // Move cursor in position of MPoteridis
     wmove(stdscr,MPoteridis.getDy(),MPoteridis.getDx());
-    while(1)
+    int ch;
+    bool u_won, c_won;
+    while( (ch = getch()) != 27)  // ASCII code for esc
     {
-        MPoteridis.setDirection(getch());
+        MPoteridis.setDirection(ch);
         bool move = MPoteridis.move(maze,stdscr,LMalfoys);
         if(move) //if move is acceptable then computer will move
             LMalfoys.move(maze,stdscr,MPoteridis);
         refresh();
+        u_won = player_won(MPoteridis,MagStar);
+        c_won = player_won(LMalfoys,MagStar);
+        if(u_won)
+            end_screen(true);  //user won
+        else if(c_won)
+            end_screen(false); // computer won
     }
 
-    getch();
     endwin();
+    exit(0);
 }
 
 void Engine :: print_maze()
@@ -72,6 +84,8 @@ void Engine :: print_maze()
                 MPoteridis.print_position(stdscr);
             else if(i == LMalfoys.getDy() && j == LMalfoys.getDx())
                LMalfoys.print_position(stdscr);
+            else if(i == MagStar.getDy() && j == MagStar.getDx())
+                MagStar.print_position(stdscr);
             else 
             {
                 if(maze[i][j]=='*')
@@ -88,4 +102,26 @@ void Engine :: print_maze()
         } 
         printw("\n");
     }
+}
+
+bool Engine :: player_won(const Player &p1,const Player &p2)
+{
+    if(p1.getDx() == p2.getDx() && p1.getDy() == p2.getDy())  
+        return true;
+    else 
+        return false;
+}
+
+void Engine :: end_screen(bool flag)
+{
+    clear();
+    move(0,0);
+    if(flag)  //user won
+        printw("YOU WIN!\nPress any key to exit...");
+    else 
+        printw("YOU LOST!\nPress any key to exit...");
+    refresh();
+    getch();
+    endwin();
+    exit(0);
 }
