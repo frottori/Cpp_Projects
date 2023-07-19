@@ -113,22 +113,17 @@ bool Engine :: player_won(const Player &p1,const Player &p2)
 
 void Engine :: end_screen(bool flag)
 {
-    clear();
-    move(0,0);
-    
+    string msg;
     if(flag)  //user won
-        printw("YOU WIN!\nPress any key to exit...");
+       msg = "YOU WIN!";
     else 
-        printw("YOU LOST!\nPress any key to exit...");
-    refresh();
-    getch();
-    endwin();
+        msg = "YOU LOST!";
     clear();
-    if(start_screen())
+    if(start_screen(msg))
         start_game();
 }
 
-bool Engine :: start_screen()
+bool Engine :: start_screen(string msg)
 {
     initscr();
     noecho();
@@ -141,7 +136,7 @@ bool Engine :: start_screen()
 
     WINDOW* menuwin = newwin(4,15,0,0);
     box(menuwin,0,0);
-    mvwprintw(menuwin,0,3,"Poteridis");
+    mvwprintw(menuwin,0,3,msg.c_str());
     refresh();
     wrefresh(menuwin);
     keypad(menuwin,true);
