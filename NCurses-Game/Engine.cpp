@@ -80,7 +80,7 @@ void Engine :: start_game()
     while(1)
     {
         MPoteridis.movePlayer(getch(),maze,stdscr,LMalfoys);
-        LMalfoys.moveComputer();
+        LMalfoys.moveComputer(maze,stdscr,MPoteridis);
         refresh();
     }
 

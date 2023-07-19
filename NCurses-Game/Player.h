@@ -10,13 +10,15 @@ class Player
         int dx;  //col
         int dy;  //row
         int color;
+        bool** grid;
     public:
         Player();
         Player(char,int);
         void initial_position(char**,const Player&);
         void movePlayer(int,char**,WINDOW*,const Player&);
-        void moveComputer();
+        void moveComputer(char**,WINDOW*,const Player&);
         void print_position(WINDOW*);
+        bool isValid(const Player &p,bool** grid,char** maze,int y,int x);
 
         // getters and setters
         int getName();
