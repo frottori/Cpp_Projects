@@ -9,7 +9,7 @@ int main(int argc,char** argv)
     //Check arguments
     if (argc != 2)
     {
-        cerr << "too many or none arguments" << endl;
+        cerr << "Too many or none arguments" << endl;
         return 1;
     }
 

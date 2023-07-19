@@ -5,13 +5,8 @@
 
 using namespace std;
 
-Engine :: Engine(ifstream& file,int rows,int cols)
+Engine :: Engine(ifstream& file,int rows,int cols)  : LMalfoys('L',2,rows, cols),MPoteridis('M',1)
 {
-    //Players
-    MPoteridis.setName('M');
-    MPoteridis.setColor(1);
-    LMalfoys.setName('L');
-    LMalfoys.setColor(2);
 
     this->rows = rows;
     this->cols = cols;
@@ -30,28 +25,17 @@ Engine :: Engine(ifstream& file,int rows,int cols)
         strcat(maze[i], line.c_str());
         i++;
     }
-
-    // Array that says if computer can go there
-    grid = new bool*[this->rows];
-    for (int i = 0; i < this->rows; i++) {
-        grid[i] = new bool[this->cols];
-    }
-    //all other positions true
-    for(int i = 0; i < this->rows; i++)
-        for(int j = 0; j < this->cols; j++)
-            grid[i][j] = true;
 }
 
 void Engine :: start_game()
 {
-    //NCurses Window
+    //NCurses Window Settings
     initscr();
     start_color(); 
     noecho();
     cbreak();
     curs_set(0);  // Show the cursor (0: invisible, 1: normal, 2: very visible)
     keypad(stdscr,true); //enable arrow keys
-
     // Define custom color pairs
     init_pair(1, COLOR_MAGENTA, COLOR_BLACK);    // Player 1 colour: Yellow on Black
     init_pair(2, COLOR_GREEN, COLOR_BLACK);     // Player 2 colour: Green on Black
@@ -60,8 +44,26 @@ void Engine :: start_game()
     //Initialise positions of players
     MPoteridis.initial_position(maze,MPoteridis,rows,cols);
     LMalfoys.initial_position(maze,MPoteridis,rows,cols);
+    //Print Maze with Players in positions
+    this->print_maze();
     
-    //Print Maze with Players in postions
+    // Move cursor in position of MPoteridis
+    wmove(stdscr,MPoteridis.getDy(),MPoteridis.getDx());
+    while(1)
+    {
+        MPoteridis.setDirection(getch());
+        bool move = MPoteridis.move(maze,stdscr,LMalfoys);
+        if(move) //if move is acceptable then computer will move
+            LMalfoys.move(maze,stdscr,MPoteridis);
+        refresh();
+    }
+
+    getch();
+    endwin();
+}
+
+void Engine :: print_maze()
+{
     for(int i=0; i < rows ; i++)
     {
        for(int j=0; j < cols; j++)
@@ -86,16 +88,4 @@ void Engine :: start_game()
         } 
         printw("\n");
     }
-    // Move cursor in position of MPoteridis
-    wmove(stdscr,MPoteridis.getDy(),MPoteridis.getDx());
-    while(1)
-    {
-        bool move = MPoteridis.movePlayer(getch(),maze,stdscr,LMalfoys);
-        if(move) //if move is acceptable then computer will move
-            LMalfoys.moveComputer(maze,grid,stdscr,MPoteridis,rows,cols);
-        refresh();
-    }
-
-    getch();
-    endwin();
 }

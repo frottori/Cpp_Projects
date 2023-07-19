@@ -3,7 +3,8 @@
 #include <string>
 #include <ncurses.h>
 #include <fstream>
-#include "Player.h"
+#include "User.h"
+#include "Computer.h"
 
 using namespace std;
 
@@ -12,11 +13,12 @@ class Engine
     private:
         char** maze;
         int rows, cols;
-        bool** grid;
-        Player MPoteridis,LMalfoys;
+        User MPoteridis;
+        Computer LMalfoys;
     public:
         Engine(ifstream& file,int rows,int cols);
         void start_game(); 
+        void print_maze();
 };
 
 #endif
