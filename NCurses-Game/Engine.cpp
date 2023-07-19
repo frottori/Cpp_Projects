@@ -123,7 +123,9 @@ void Engine :: end_screen(bool flag)
     refresh();
     getch();
     endwin();
-    exit(0);
+    clear();
+    if(start_screen())
+        start_game();
 }
 
 bool Engine :: start_screen()
