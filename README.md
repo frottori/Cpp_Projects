@@ -1,2 +1,2 @@
 # Cpp_Projects
-All of my undergraduate Projects in the C++ Programming language
+All of my Undergraduate Projects in the C++ Programming Language
