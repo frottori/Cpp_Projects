@@ -11,9 +11,11 @@ class Engine
 {
     private:
         char** maze;
+        int rows, cols;
+        bool** grid;
         Player MPoteridis,LMalfoys;
     public:
-        Engine(ifstream& file);
+        Engine(ifstream& file,int rows,int cols);
         void start_game(); 
 };
 

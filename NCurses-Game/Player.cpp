@@ -2,8 +2,6 @@
 #include <random>
 #include <ncurses.h>
 #include <vector>
-#define COLS 13
-#define ROWS 23
 
 using namespace std;
 
@@ -11,16 +9,6 @@ Player :: Player()
 {
     this->dx = -1;
     this->dy = -1;
-    
-    // Array that says if computer can go there
-    grid = new bool*[ROWS];
-    for (int i = 0; i < ROWS; i++) {
-        grid[i] = new bool[COLS];
-    }
-    //all other positions true
-    for(int i = 0; i < ROWS; i++)
-        for(int j = 0; j < COLS; j++)
-            grid[i][j] = true;
 }
 
 Player :: Player(char Name,int color)
@@ -29,30 +17,20 @@ Player :: Player(char Name,int color)
     this->dx = -1;
     this->dy = -1;
     this->color = color;
-
-    // Array that says if computer can go there
-    grid = new bool*[ROWS];
-    for (int i = 0; i < ROWS; i++) {
-        grid[i] = new bool[COLS];
-    }
-    //all other positions true
-    for(int i = 0; i < ROWS; i++)
-        for(int j = 0; j < COLS; j++)
-            grid[i][j] = true;
 }
 
-void Player :: initial_position(char** maze,const Player &p)
+void Player :: initial_position(char** maze,const Player &p,int rows,int cols)
 {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<int> rangedx(0, COLS - 1); 
-    uniform_int_distribution<int> rangedy(0, ROWS - 1); 
+    uniform_int_distribution<int> rangedx(0, cols - 1); 
+    uniform_int_distribution<int> rangedy(0, rows - 1); 
 
     int x = rangedx(gen); 
     int y = rangedy(gen);
 
     if(maze[y][x] == '*' || x == p.dx && y == p.dy)  //if it is wall or the same position as other player 
-        initial_position(maze,p);
+        initial_position(maze,p,rows,cols);
     else 
     {
         this->dx = x;
@@ -60,22 +38,22 @@ void Player :: initial_position(char** maze,const Player &p)
     }    
 }
 
-void Player :: movePlayer(int direction,char** maze,WINDOW* win,const Player &p)
+bool Player :: movePlayer(int direction,char** maze,WINDOW* win,const Player &p)
 {
     int old_dx = this->dx;
     int old_dy = this->dy;
-    if(direction == KEY_UP && maze[this->dy-1][this->dx]!='*')
-        this->dy = this->dy - 1;
-    if(direction == KEY_DOWN && maze[this->dy+1][this->dx]!='*')
-        this->dy = this->dy + 1;
-    if(direction == KEY_LEFT && maze[this->dy][this->dx - 1]!='*')
-        this->dx = this->dx - 1;
-    if(direction == KEY_RIGHT && maze[this->dy][this->dx + 1]!='*')
-        this->dx = this->dx + 1;
-    if(this->dx==p.dx && this->dy==p.dy)
+    switch(direction)
+    {
+        case KEY_UP: this->dy -= 1; break;
+        case KEY_DOWN: this->dy += 1; break;
+        case KEY_LEFT: this->dx -= 1; break;
+        case KEY_RIGHT: this->dx += 1; break;
+    }
+    if(this->dx==p.dx && this->dy==p.dy || maze[this->dy][this->dx]=='*')
     {
        this->dx = old_dx;
        this->dy = old_dy;
+       return false;    //no acceptable move
     } 
     else
     {
@@ -83,11 +61,12 @@ void Player :: movePlayer(int direction,char** maze,WINDOW* win,const Player &p)
         wprintw(win,".");
         wmove(win,this->dy,this->dx); 
         print_position(win);
+        return true; //acceptable move
     }
 }
 
-bool Player :: isValid(const Player &p,bool** grid,char** maze,int y,int x){
-    if(x < 0 || x >= COLS || y < 0 || y >= ROWS) 
+bool Player :: isValid(const Player &p,bool** grid,char** maze,int y,int x,int rows,int cols){
+    if(x < 0 || x >= cols || y < 0 || y >= rows) 
         return false; //if its out of bounds
     if(maze[y][x] == '*')
         return false;
@@ -96,7 +75,7 @@ bool Player :: isValid(const Player &p,bool** grid,char** maze,int y,int x){
   return grid[y][x];  //else it can move if the space is true
 }
 
-void Player :: moveComputer(char** maze,WINDOW* win,const Player &p)
+void Player :: moveComputer(char** maze,bool** grid,WINDOW* win,const Player &p,int rows,int cols)
 {
     int old_dx = this->dx;
     int old_dy = this->dy;
@@ -115,7 +94,7 @@ void Player :: moveComputer(char** maze,WINDOW* win,const Player &p)
     for (int i = 0; i < allOptions.size(); i++) {
         int newY = this->dy + allOptions[i].first;
         int newX = this->dx + allOptions[i].second;
-        if(isValid(p,grid,maze,newY,newX))
+        if(isValid(p,grid,maze,newY,newX,rows,cols))
             options.push_back(make_pair(newY, newX));
     }
 
@@ -136,7 +115,7 @@ void Player :: moveComputer(char** maze,WINDOW* win,const Player &p)
         print_position(win);
         grid[this->dy][this->dx] = false;
     }
-    else{
+    else {
         return;
     }
 }

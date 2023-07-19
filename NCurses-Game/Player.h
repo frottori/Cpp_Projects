@@ -10,24 +10,24 @@ class Player
         int dx;  //col
         int dy;  //row
         int color;
-        bool** grid;
     public:
         Player();
-        Player(char,int);
-        void initial_position(char**,const Player&);
-        void movePlayer(int,char**,WINDOW*,const Player&);
-        void moveComputer(char**,WINDOW*,const Player&);
+        Player(char Name,int color);
+        void initial_position(char** maze,const Player&,int rows,int cols);
+        bool movePlayer(int direction,char** maze ,WINDOW*,const Player&);
+        void moveComputer(char** maze,bool** grid,WINDOW*,const Player&,int rows,int cols);
+        void moveStar();
         void print_position(WINDOW*);
-        bool isValid(const Player &p,bool** grid,char** maze,int y,int x);
+        bool isValid(const Player &p,bool** grid,char** maze,int y,int x,int rows,int cols);
 
         // getters and setters
         int getName();
-        void setName(int);
+        void setName(int Name);
         int getDx();
-        void setDx(int);
+        void setDx(int dx);
         int getDy();
-        void setDy(int);
+        void setDy(int dy);
         int getColor();
-        void setColor(int);
+        void setColor(int color);
 };
 #endif

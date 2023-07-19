@@ -19,8 +19,20 @@ int main(int argc,char** argv)
         cerr << "Error opening the file." << endl;
         return 1;
     }
+    // calculate rows and cols from file
+    string line;
+    int rows = 0;
+    while(getline(mapFile,line))
+    {
+        rows++;
+    }
+    int cols = static_cast<int>(line.length());
 
-    Engine e(mapFile);
+    // resets the file pointer to the beginning of the file
+    mapFile.clear();
+    mapFile.seekg(0, ios::beg);
+
+    Engine e(mapFile,rows,cols);
     e.start_game();
   
     mapFile.close();
