@@ -19,7 +19,7 @@ Player :: Player(char Name,int color)
     this->color = color;
 }
 
-void Player :: initial_position(char** maze,const Player &p1,const Player& p2,int rows,int cols)
+void Player :: random_position(char** maze,const Player &p1,const Player& p2,int rows,int cols)
 {
     random_device rd;
     mt19937 gen(rd());
@@ -30,7 +30,7 @@ void Player :: initial_position(char** maze,const Player &p1,const Player& p2,in
     int y = rangedy(gen);
 
     if(maze[y][x] == '*' || x == p1.dx && y == p1.dy || x == p2.dx && y == p2.dy)  //if it is wall or the same position as other two players 
-        initial_position(maze,p1,p2,rows,cols);
+        random_position(maze,p1,p2,rows,cols);
     else 
     {
         this->dx = x;

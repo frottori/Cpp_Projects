@@ -12,7 +12,7 @@ class Player
     public:
         Player();
         Player(char Name,int color);
-        void initial_position(char** maze,const Player&,const Player&,int rows,int cols);
+        void random_position(char** maze,const Player&,const Player&,int rows,int cols);
         virtual bool move(char** maze ,WINDOW*,const Player&) = 0;
         void print_position(WINDOW*);
         // getters and setters

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <ncurses.h>
+#include <random>
 
 using namespace std;
 
@@ -43,9 +44,9 @@ void Engine :: start_game()
     init_pair(4, COLOR_CYAN, COLOR_BLACK);     // Player 3 : Cyan on Black
 
     //Initialise positions of players
-    MPoteridis.initial_position(maze,MPoteridis,MPoteridis,rows,cols);
-    LMalfoys.initial_position(maze,MPoteridis,MPoteridis,rows,cols);
-    MagStar.initial_position(maze,MPoteridis,LMalfoys,rows,cols);
+    MPoteridis.random_position(maze,MPoteridis,MPoteridis,rows,cols);
+    LMalfoys.random_position(maze,MPoteridis,MPoteridis,rows,cols);
+    MagStar.random_position(maze,MPoteridis,LMalfoys,rows,cols);
 
     //Print Maze with Players in positions
     this->print_maze();
@@ -54,19 +55,37 @@ void Engine :: start_game()
     wmove(stdscr,MPoteridis.getDy(),MPoteridis.getDx());
     int ch;
     bool u_won, c_won;
+
     while( (ch = getch()) != 27)  // ASCII code for esc
     {
-        MPoteridis.setDirection(ch);
-        bool move = MPoteridis.move(maze,stdscr,LMalfoys);
-        if(move) //if move is acceptable then computer will move
-            LMalfoys.move(maze,stdscr,MPoteridis);
+        random_device rd;  
+        mt19937 rng(rd()); 
+        uniform_int_distribution<int> dist(8, 20); 
+        int time = dist(rng); 
+
+        for (int i = 0; i < time; i++) 
+        {
+            MPoteridis.setDirection(ch);
+            bool move = MPoteridis.move(maze,stdscr,LMalfoys);
+            if(move) //if move is acceptable then computer will move
+                LMalfoys.move(maze,stdscr,MPoteridis);
+            refresh();
+            u_won = player_won(MPoteridis,MagStar);
+            c_won = player_won(LMalfoys,MagStar);
+            if(u_won)
+                end_screen(true);  //user won
+            else if(c_won)
+                end_screen(false); // computer won
+            ch = getch();
+            if(ch == 27)
+            {
+                endwin();
+                exit(0);
+            }    
+        }
+       
+        MagStar.move(maze,stdscr,MPoteridis);
         refresh();
-        u_won = player_won(MPoteridis,MagStar);
-        c_won = player_won(LMalfoys,MagStar);
-        if(u_won)
-            end_screen(true);  //user won
-        else if(c_won)
-            end_screen(false); // computer won
     }
 
     endwin();
