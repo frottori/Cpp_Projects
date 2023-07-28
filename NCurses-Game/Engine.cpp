@@ -182,8 +182,8 @@ bool Engine :: start_screen(string msg)
                 break;
             case KEY_DOWN: 
                 highlight++;
-                if (highlight==3) 
-                    highlight=2;
+                if (highlight==2) 
+                    highlight=1;
                 break;
             default: break;
         }

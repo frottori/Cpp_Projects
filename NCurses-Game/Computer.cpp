@@ -75,6 +75,9 @@ bool Computer :: move(char** maze,WINDOW* win,const Player &p)
         return true;  //option to move
     }
     else {
+        for(int i = 0; i < this->rows; i++)
+            for(int j = 0; j < this->cols; j++)
+                grid[i][j] = true;
         return false; //no option to move
     }
 }
