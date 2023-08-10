@@ -38,9 +38,9 @@ void Engine :: start_game()
     curs_set(0);  // Show the cursor (0: invisible, 1: normal, 2: very visible)
     keypad(stdscr,true); //enable arrow keys
     // Define custom color pairs
-    init_pair(1, COLOR_MAGENTA, COLOR_BLACK);    // Player 1 colour: Yellow on Black
+    init_pair(1, COLOR_MAGENTA, COLOR_BLACK);    // Player 1 colour: Magenta on Black
     init_pair(2, COLOR_GREEN, COLOR_BLACK);     // Player 2 colour: Green on Black
-    init_pair(3, COLOR_BLUE, COLOR_BLACK);     // Wall colour: Red on Black
+    init_pair(3, COLOR_BLUE, COLOR_BLACK);     // Wall colour: Blue on Black
     init_pair(4, COLOR_CYAN, COLOR_BLACK);     // Player 3 : Cyan on Black
 
     //Initialise positions of players
