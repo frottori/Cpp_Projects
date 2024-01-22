@@ -1,3 +1,3 @@
 # Cpp_Projects
-Object Oriented Programming
-Ncurses Library
+- Object Oriented Programming
+- Ncurses Library
